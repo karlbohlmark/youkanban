@@ -1,3 +1,14 @@
+hub = new EventEmitter2({ verbose: true })
+
+model = phases:
+			'devStart': [id:1, title: 'capture the flag']
+			'working': [{id: 3, title: 'Conquer the world'}]
+			'devDone': [{id: 1, title: 'Rescue the princess' }]
+			'test': []
+
+'prod':[{id: 4, title: 'Conquer the world'}]
+
+moveEvent = {name: 'task-move', fromPhase:'test', toPhase: 'prod' }
 
 
 $ ->
@@ -47,9 +58,17 @@ $ ->
 			if e.stopPropagation then e.stopPropagation()
 			id = e.dataTransfer.getData("Text")
 			el = document.getElementById(id)
-			el.parentNode.removeChild el
-			console.log id
-			console.log e.target
+			p = el.parentNode
+			p.removeChild el
+
+			while (p = p.parentNode) && !p.classList.contains('phase')
+				console.log p
+
+			hub.emit('task-move', { fromPhase: bin.dataset.phase, toPhase: p.dataset.phase})
+
 			bin.appendChild(el)
+
+
+
 			false
 			)(bin)
