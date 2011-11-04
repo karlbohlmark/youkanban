@@ -1,0 +1,32 @@
+.board .phase {
+  display: block;
+  float: left;
+  height: 100%;
+  width: 20%;
+}
+.board .phase li {
+  padding: 10px;
+  list-style-type: none;
+  outline: 1px solid #000;
+}
+.board .phase:nth-child(1) {
+  background-color: #3af100;
+}
+.board .phase:nth-child(2) {
+  background-color: #41e40a;
+}
+.board .phase:nth-child(3) {
+  background-color: #47d618;
+}
+.board .phase:nth-child(4) {
+  background-color: #4ec925;
+}
+.board .phase:nth-child(5) {
+  background-color: #5b3;
+}
+.board .tasks {
+  height: 100%;
+}
+.board .tasks.ui-state-hover {
+  opacity: 80%;
+}

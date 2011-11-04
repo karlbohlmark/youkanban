@@ -1,0 +1,25 @@
+script(src='../public/lib/jquery.js')
+script(src='../public/lib/jquery-ui/js/jquery-ui-1.8.16.custom.min.js')
+script(src='../public/js/board.js')
+link(href='../public/css/base.css', rel='stylesheet')
+link(href='../public/css/board.css', rel='stylesheet')
+
+mixin tasks(tasks)
+	ul.tasks
+		- each task in tasks
+			li.task(id="task-#{task.id}")
+				h2= task.title
+
+
+
+.board
+	.phase.devStart
+		mixin tasks([{id: 3, title: 'Conquer the world'}])
+	.phase.working
+		mixin tasks([ { id: 2, title: 'Slay the dragon' }])
+	.phase.devDone
+		mixin tasks([ {id: 1, title: 'Rescue the princess' }])
+	.phase.test
+		mixin tasks([  ])
+	.phase.prod
+		mixin tasks([{id: 4, title: 'Conquer the world'}	])
