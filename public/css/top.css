@@ -1,0 +1,35 @@
+.topbar-wrapper {
+  height: 40px;
+}
+.container@media screen and (-webkit-min-device-pixel-ratio:0) {
+    .container input {
+      padding-right: 4px !important;
+      padding-left: 4px !important;
+      box-sizing: initial;
+    }
+    .container input::-webkit-input-placeholder {
+      position: relative;
+      top: 2px;
+    }
+}
+ {
+  boz-sizing: border-box;
+  -moz-box-sizing: border-box;
+  width: calc(100% -100px);
+  padding: 0;
+
+}
+.container input {
+  -moz-box-sizing: content-box;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .container input {
+    padding-right: 4px !important;
+    padding-left: 4px !important;
+    box-sizing: initial;
+  }
+  .container input::-webkit-input-placeholder {
+    position: relative;
+    top: 2px;
+  }
+}

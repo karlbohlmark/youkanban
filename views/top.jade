@@ -1,0 +1,29 @@
+.topbar-wrapper(style='z-index: 5;')
+      .topbar(data-dropdown='dropdown')
+        .topbar-inner
+          .container
+            ul.nav
+              li.active.dropdown
+                h3
+                  a.dropdown-toggle(href='#') Experis
+                ul.dropdown-menu.project-chooser
+                  li
+                    a(href='#') PowerCast
+                  li
+                    a(href='#') PowerBase
+            ul.nav
+              li.active
+                a(href='#') Kanban
+              li.dropdown
+                a.dropdown-toggle(href='#') Spacious
+                ul.dropdown-menu
+                  li
+                    a(href='#') Compact
+                  li
+                    a(href='#') Something else here
+                  //
+                    li.divider
+                  
+            form.pull-left(action='')
+              input.search(type='search', name='search', autosave='yeah,sure', results='5', placeholder='Search')
+            

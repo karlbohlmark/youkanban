@@ -1,4 +1,15 @@
-hub = new EventEmitter2({ verbose: true })
+window.hub = new EventEmitter2({ verbose: true })
+q = document.querySelectorAll.bind(document)
+String::contains ?= (s)-> this.indexOf(s)!=-1
+
+hub.on 'task-filter-changed', (filterEvent) ->
+	tasks = [].slice.call(q('.task'))
+	for task in tasks
+		if !task.textContent.toUpperCase().contains(filterEvent.query.toUpperCase()) then task.classList.add('filtered-out') else task.classList.remove('filtered-out')
+
+
+hub.on 'task-move', (moveEvent) ->
+	console.log moveEvent
 
 model = phases:
 			'devStart': [id:1, title: 'capture the flag']
@@ -12,23 +23,6 @@ moveEvent = {name: 'task-move', fromPhase:'test', toPhase: 'prod' }
 
 
 $ ->
-	###
-	$( '.task' ).draggable(
-		revert: true
-	)
-
-	$( '.tasks' ).droppable
-		activeClass: 'ui-state-hover'
-		drop: ( event, ui ) ->
-			console.log this
-			console.log ui
-			ui.draggable.context.style.position = 'static'
-			ui.draggable.context.style.top = 0
-			ui.draggable.context.style.left = 0
-			this.appendChild(ui.draggable.context)
-	###
-
-
 	tasks = document.querySelectorAll(".task")
 	el = null
 	t = 0
@@ -55,20 +49,22 @@ $ ->
 		bin.addEventListener "dragleave", ->
 
 		bin.addEventListener "drop",  ((bin) -> (e) ->
-			if e.stopPropagation then e.stopPropagation()
+			e.stopPropagation()
+			e.preventDefault()
 			id = e.dataTransfer.getData("Text")
 			el = document.getElementById(id)
 			p = el.parentNode
 			p.removeChild el
 
-			while (p = p.parentNode) && !p.classList.contains('phase')
+			while (p = p.parentNode) && !p.dataset.phase
 				console.log p
 
-			hub.emit('task-move', { fromPhase: bin.dataset.phase, toPhase: p.dataset.phase})
+			from = bin
+			while (from = from.parentNode) && !from.dataset.phase
+				console.log from.dataset.phase
+			hub.emit('task-move', {task: id, fromPhase: from.dataset.phase, toPhase: p.dataset.phase})
 
 			bin.appendChild(el)
-
-
 
 			false
 			)(bin)

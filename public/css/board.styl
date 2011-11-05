@@ -1,4 +1,4 @@
-phase-color= #66c
+phase-color= #6a6
 
 .board
 
@@ -8,16 +8,30 @@ phase-color= #66c
 		height 100%
 		width 20%
 		li
-			padding 10px
 			list-style-type none
-			outline 1px solid black
+			
 
 	
-	for phase in 1..5
-		.phase:nth-child({phase})
-			background-color: saturate(phase-color, 100% - 20% * phase)
-	
 	.tasks
+		margin 0
 		height 100%
 		&.ui-state-hover
 			opacity 80%
+		
+		padding 0 10px
+		
+		.task
+			&.filtered-out
+				opacity 0.3
+			border 2px solid phase-color
+			border-radius 4px
+			margin-top 7px
+			padding 10px
+			h2
+				margin 0
+	
+	for phase in 1..5
+		.phase:nth-child({phase})
+			background-color: lighten(phase-color,20% * (6- phase))
+	
+	
