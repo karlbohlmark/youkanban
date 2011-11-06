@@ -11,17 +11,59 @@ hub.on 'task-filter-changed', (filterEvent) ->
 hub.on 'task-move', (moveEvent) ->
 	console.log moveEvent
 
-model = phases:
-			'devStart': [id:1, title: 'capture the flag']
-			'working': [{id: 3, title: 'Conquer the world'}]
-			'devDone': [{id: 1, title: 'Rescue the princess' }]
-			'test': []
-
+model = phases:[
+				name: 'devStart'
+				issues: []
+			,
+				name: 'working'
+				issues: []
+			,
+				name: 'devDone'
+				issues: []
+			,
+				name: 'test'
+				issues: []
+		]
+			
 'prod':[{id: 4, title: 'Conquer the world'}]
 
 moveEvent = {name: 'task-move', fromPhase:'test', toPhase: 'prod' }
 
 
+# ----------------- EVENTS -----------------
+hub.on 'task-add', (taskAddEvent) ->
+	task = taskAddEvent
+
+	newTask = $("""
+	<li class="task" id="#{task.id}" draggable="true"><h2 class="title">#{task.title}</h2><p class="body">#{task.body}</p></li>
+	""")
+
+	newTask.on "dragstart", (e) ->
+		e = e.originalEvent
+		e.dataTransfer.effectAllowed = "copy"
+		e.dataTransfer.setData "Text", @id
+		
+	phase = $("[data-phase='#{task.phase}']")
+	phase.find('.tasks').append(newTask)
+
+getField = (fieldName)-> 
+	(i)-> i.field.filter((f)->f['@name']==fieldName)[0].value
+
+extractIssues = (issuesResponse)->
+	{ 
+		id: i['@id'], 
+		title: getField('summary')(i), 
+		body: getField('description')(i), 
+		phase: getField('State')(i) 
+	} for i in issuesResponse.issue
+
+hub.on 'load-project', (p) ->
+	youtrack.getIssuesForProject p, (issuesResponse)->
+		hub.emit( 'task-add', issue ) for issue in extractIssues(issuesResponse)
+#--------------------------------------------
+
+
+#-------------------- DRAG AND DROP -----------------
 $ ->
 	tasks = document.querySelectorAll(".task")
 	el = null
@@ -68,3 +110,4 @@ $ ->
 
 			false
 			)(bin)
+#-------------------/ DRAG AND DROP ----------------

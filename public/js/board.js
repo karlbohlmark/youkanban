@@ -1,5 +1,5 @@
 (function() {
-  var model, moveEvent, q, _ref;
+  var extractIssues, getField, model, moveEvent, q, _ref;
   window.hub = new EventEmitter2({
     verbose: true
   });
@@ -23,27 +23,21 @@
     return console.log(moveEvent);
   });
   model = {
-    phases: {
-      'devStart': [
-        {
-          id: 1,
-          title: 'capture the flag'
-        }
-      ],
-      'working': [
-        {
-          id: 3,
-          title: 'Conquer the world'
-        }
-      ],
-      'devDone': [
-        {
-          id: 1,
-          title: 'Rescue the princess'
-        }
-      ],
-      'test': []
-    },
+    phases: [
+      {
+        name: 'devStart',
+        issues: []
+      }, {
+        name: 'working',
+        issues: []
+      }, {
+        name: 'devDone',
+        issues: []
+      }, {
+        name: 'test',
+        issues: []
+      }
+    ],
     'prod': [
       {
         id: 4,
@@ -56,6 +50,52 @@
     fromPhase: 'test',
     toPhase: 'prod'
   };
+  hub.on('task-add', function(taskAddEvent) {
+    var newTask, phase, task;
+    task = taskAddEvent;
+    newTask = $("<li class=\"task\" id=\"" + task.id + "\" draggable=\"true\"><h2 class=\"title\">" + task.title + "</h2><p class=\"body\">" + task.body + "</p></li>");
+    newTask.on("dragstart", function(e) {
+      e = e.originalEvent;
+      e.dataTransfer.effectAllowed = "copy";
+      return e.dataTransfer.setData("Text", this.id);
+    });
+    phase = $("[data-phase='" + task.phase + "']");
+    return phase.find('.tasks').append(newTask);
+  });
+  getField = function(fieldName) {
+    return function(i) {
+      return i.field.filter(function(f) {
+        return f['@name'] === fieldName;
+      })[0].value;
+    };
+  };
+  extractIssues = function(issuesResponse) {
+    var i, _i, _len, _ref2, _results;
+    _ref2 = issuesResponse.issue;
+    _results = [];
+    for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+      i = _ref2[_i];
+      _results.push({
+        id: i['@id'],
+        title: getField('summary')(i),
+        body: getField('description')(i),
+        phase: getField('State')(i)
+      });
+    }
+    return _results;
+  };
+  hub.on('load-project', function(p) {
+    return youtrack.getIssuesForProject(p, function(issuesResponse) {
+      var issue, _i, _len, _ref2, _results;
+      _ref2 = extractIssues(issuesResponse);
+      _results = [];
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        issue = _ref2[_i];
+        _results.push(hub.emit('task-add', issue));
+      }
+      return _results;
+    });
+  });
   $(function() {
     var bin, bins, el, t, tasks, _i, _len, _results;
     tasks = document.querySelectorAll(".task");

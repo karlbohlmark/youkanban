@@ -1,8 +1,10 @@
 meta(charset="utf8")
 script(src='../public/lib/jquery.js')
+script(src='../public/lib/jquery.js')
 script(src='../public/lib/eventemitter2.js')
 script(src='../public/lib/bootstrap-dropdown.js')
 script(src='../public/js/board.js')
+script(src='../public/js/youtrack.js')
 script(src='../public/js/top.js')
 
 link(href='../public/css/bootstrap.css', rel='stylesheet')
@@ -19,17 +21,21 @@ mixin tasks(tasks)
 
 include top
 
+//
+	{ id: 2, title: 'Slay the dragon' }
+	{id: 1, title: 'Rescue the princess' }
+	{id: 4, title: 'Have a drink with Zaphod'}
 .board
 	.phase(data-phase="devStart")
-		mixin tasks([{id: 3, title: 'Conquer the world'}])
+		mixin tasks([])
 	.phase(data-phase="working")
-		mixin tasks([ { id: 2, title: 'Slay the dragon' }])
+		mixin tasks([])
 	.phase(data-phase="devDone")
-		mixin tasks([ {id: 1, title: 'Rescue the princess' }])
+		mixin tasks([])
 	.phase(data-phase="test")
-		mixin tasks([  ])
+		mixin tasks([])
 	.phase(data-phase="prod")
-		mixin tasks([{id: 4, title: 'Conquer the world'}	])
+		mixin tasks([])
 
 .loading-overlay
 	.loading-message Loading...
