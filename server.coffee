@@ -2,11 +2,6 @@ express 	= require 'express'
 public_dir 	= __dirname
 httpProxy 	= require 'http-proxy'
 
-youtrack_login = 'kanban'
-youtrack_password = 'kanban'
-
-youtrack_session = ''
-
 app = express.createServer()
 
 app.set 'view options', layout: false
