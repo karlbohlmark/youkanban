@@ -1,12 +1,10 @@
 express 	= require 'express'
-bouncy 		= require 'bouncy'
-request		= require 'request'
+#request		= require 'request'
 public_dir 	= __dirname
-jade 		= require 'jade'
-fs			= require 'fs'
+httpProxy 	= require 'http-proxy'
 
-youtrack_login = 'karl'
-youtrack_password = 'karlbohlmark'
+youtrack_login = 'kanban'
+youtrack_password = 'kanban'
 
 youtrack_session = ''
 
@@ -16,32 +14,28 @@ app.set 'view options', layout: false
 
 app.use express.static(public_dir)
 
-
-
+###
 # LOGIN TO YOUTRACK
 request.post
-	url: 'http://localhost:8282/rest/login'
+	url: 'http://localhost:8282/rest/user/login'
 	body: "login=#{youtrack_login}&password=#{youtrack_password}"
+	headers: {'content-type': 'application/x-www-form-urlencoded'}
 	, (error, res, body) ->
 		youtrack_session = res.headers['set-cookie']
-		console.log(error)
-		console.log(JSON.stringify(res.headers))
+		console.log(body)
 		console.log youtrack_session
+###
 
 # PROXY TO YOUTRACK
-bouncy( (req, bounce) -> 
-	if (req.url.substr(0, 5) == '/rest') then bounce(8282, { headers:{ 'set-cookie': youtrack_session } }) else bounce(8080)
+httpProxy.createServer( (req, res, proxy) ->
+	proxy.proxyRequest req, res,
+		host: 'localhost'
+		port: if req.url.substr(0, 5) == '/rest' then 8282 else 8080
 ).listen(8000)
+
 
 # ACTIONS
 app.get '/', (req, res)-> res.render('board.jade')
-
-app.get '/view/:viewName', (req, res) -> 
-	v = fs.readFileSync('views/' + req.param('viewName'))
-	fn = jade.compile(v.toString(), {filename: 'board.jade'})
-	
-	res.send(fn.toString())
-	res.end()
 
 # RUN
 app.listen(8080)

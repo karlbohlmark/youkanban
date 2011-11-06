@@ -9,7 +9,12 @@ hub.on 'task-filter-changed', (filterEvent) ->
 
 
 hub.on 'task-move', (moveEvent) ->
-	console.log moveEvent
+	$.ajax
+		url: "/rest/issue/#{moveEvent.task}/execute"
+		data: "command=#{moveEvent.toPhase}"
+		type: 'POST'
+		success: ->
+		error: -> 'move the task back?'
 
 model = phases:[
 				name: 'devStart'
@@ -24,13 +29,11 @@ model = phases:[
 				name: 'test'
 				issues: []
 		]
-			
-'prod':[{id: 4, title: 'Conquer the world'}]
-
-moveEvent = {name: 'task-move', fromPhase:'test', toPhase: 'prod' }
-
 
 # ----------------- EVENTS -----------------
+hub.on 'clear-tasks', ->
+	$('.task').remove()
+
 hub.on 'task-add', (taskAddEvent) ->
 	task = taskAddEvent
 
@@ -58,10 +61,15 @@ extractIssues = (issuesResponse)->
 	} for i in issuesResponse.issue
 
 hub.on 'load-project', (p) ->
+	hub.emit( 'clear-tasks' )
 	youtrack.getIssuesForProject p, (issuesResponse)->
 		hub.emit( 'task-add', issue ) for issue in extractIssues(issuesResponse)
 #--------------------------------------------
 
+#-------------- LOAD ISSUES ----------------
+$ ->
+	hub.emit('load-project', 'EX')
+#-------------------------------------------
 
 #-------------------- DRAG AND DROP -----------------
 $ ->
@@ -99,12 +107,12 @@ $ ->
 			p.removeChild el
 
 			while (p = p.parentNode) && !p.dataset.phase
-				console.log p
+				null
 
-			from = bin
-			while (from = from.parentNode) && !from.dataset.phase
-				console.log from.dataset.phase
-			hub.emit('task-move', {task: id, fromPhase: from.dataset.phase, toPhase: p.dataset.phase})
+			to = bin
+			while (to = to.parentNode) && !to.dataset.phase
+				null
+			hub.emit('task-move', {task: id, toPhase: to.dataset.phase, fromPhase: p.dataset.phase})
 
 			bin.appendChild(el)
 

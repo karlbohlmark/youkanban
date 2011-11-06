@@ -1,5 +1,5 @@
 (function() {
-  var extractIssues, getField, model, moveEvent, q, _ref;
+  var extractIssues, getField, model, q, _ref;
   window.hub = new EventEmitter2({
     verbose: true
   });
@@ -20,7 +20,15 @@
     return _results;
   });
   hub.on('task-move', function(moveEvent) {
-    return console.log(moveEvent);
+    return $.ajax({
+      url: "/rest/issue/" + moveEvent.task + "/execute",
+      data: "command=" + moveEvent.toPhase,
+      type: 'POST',
+      success: function() {},
+      error: function() {
+        return 'move the task back?';
+      }
+    });
   });
   model = {
     phases: [
@@ -37,19 +45,11 @@
         name: 'test',
         issues: []
       }
-    ],
-    'prod': [
-      {
-        id: 4,
-        title: 'Conquer the world'
-      }
     ]
   };
-  moveEvent = {
-    name: 'task-move',
-    fromPhase: 'test',
-    toPhase: 'prod'
-  };
+  hub.on('clear-tasks', function() {
+    return $('.task').remove();
+  });
   hub.on('task-add', function(taskAddEvent) {
     var newTask, phase, task;
     task = taskAddEvent;
@@ -85,6 +85,7 @@
     return _results;
   };
   hub.on('load-project', function(p) {
+    hub.emit('clear-tasks');
     return youtrack.getIssuesForProject(p, function(issuesResponse) {
       var issue, _i, _len, _ref2, _results;
       _ref2 = extractIssues(issuesResponse);
@@ -95,6 +96,9 @@
       }
       return _results;
     });
+  });
+  $(function() {
+    return hub.emit('load-project', 'EX');
   });
   $(function() {
     var bin, bins, el, t, tasks, _i, _len, _results;
@@ -127,7 +131,7 @@
       bin.addEventListener("dragleave", function() {});
       _results.push(bin.addEventListener("drop", (function(bin) {
         return function(e) {
-          var from, id, p;
+          var id, p, to;
           e.stopPropagation();
           e.preventDefault();
           id = e.dataTransfer.getData("Text");
@@ -135,16 +139,16 @@
           p = el.parentNode;
           p.removeChild(el);
           while ((p = p.parentNode) && !p.dataset.phase) {
-            console.log(p);
+            null;
           }
-          from = bin;
-          while ((from = from.parentNode) && !from.dataset.phase) {
-            console.log(from.dataset.phase);
+          to = bin;
+          while ((to = to.parentNode) && !to.dataset.phase) {
+            null;
           }
           hub.emit('task-move', {
             task: id,
-            fromPhase: from.dataset.phase,
-            toPhase: p.dataset.phase
+            toPhase: to.dataset.phase,
+            fromPhase: p.dataset.phase
           });
           bin.appendChild(el);
           return false;

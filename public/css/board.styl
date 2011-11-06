@@ -34,4 +34,19 @@ phase-color= #6a6
 		.phase:nth-child({phase})
 			background-color: lighten(phase-color,20% * (6- phase))
 	
-	
+.loading-overlay
+	display none
+	position absolute
+	top 0
+	left 0
+	width 100%
+	height 100%
+	background-color black
+	opacity .7
+	.loading-message
+		text-align center
+		position absolute
+		width 100%
+		top 50%
+		font-size 24px
+		color white
