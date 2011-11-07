@@ -1,5 +1,5 @@
 (function() {
-  var extractIssues, getField, model, q, _ref;
+  var extractIssues, getField, q, _ref;
   window.hub = new EventEmitter2({
     verbose: true
   });
@@ -30,23 +30,6 @@
       }
     });
   });
-  model = {
-    phases: [
-      {
-        name: 'devStart',
-        issues: []
-      }, {
-        name: 'working',
-        issues: []
-      }, {
-        name: 'devDone',
-        issues: []
-      }, {
-        name: 'test',
-        issues: []
-      }
-    ]
-  };
   hub.on('clear-tasks', function() {
     return $('.task').remove();
   });
@@ -179,8 +162,22 @@
       menu.append($('<li></li>').append(item));
       return $('.board').removeClass(id).addClass(toggle.attr('data-id'));
     });
-    return $('.tasks').on('click', '.task', function() {
+    $('.tasks').on('click', '.task', function() {
       return location.href = 'http://localhost:8282/issue/' + $(this).attr('id');
     });
+    $('.container').on('dblclick', function() {
+      if (document.body.classList.contains('full-screen') && (document.body.webkitExitFullScreen != null)) {
+        return document.body.webkitExitFullScreen();
+      } else {
+        return document.body.webkitRequestFullScreen();
+      }
+    });
+    $('.fullScreen').on('click', function() {
+      return document.body.webkitRequestFullScreen();
+    });
+    return document.body.onwebkitfullscreenchange = function() {
+      console.log('fullscreeneventchange');
+      return this.classList.toggle('full-screen');
+    };
   });
 }).call(this);

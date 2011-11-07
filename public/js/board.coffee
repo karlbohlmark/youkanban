@@ -16,20 +16,6 @@ hub.on 'task-move', (moveEvent) ->
 		success: ->
 		error: -> 'move the task back?'
 
-model = phases:[
-				name: 'devStart'
-				issues: []
-			,
-				name: 'working'
-				issues: []
-			,
-				name: 'devDone'
-				issues: []
-			,
-				name: 'test'
-				issues: []
-		]
-
 # ----------------- EVENTS -----------------
 hub.on 'clear-tasks', ->
 	$('.task').remove()
@@ -155,3 +141,11 @@ $ ->
 	$('.tasks').on 'click', '.task', ->
 		location.href = 'http://localhost:8282/issue/' + $(this).attr('id')
 
+	$('.container').on 'dblclick', ->
+		if document.body.classList.contains('full-screen') and document.body.webkitExitFullScreen? then document.body.webkitExitFullScreen() else document.body.webkitRequestFullScreen()
+
+	$('.fullScreen').on 'click', ->
+		document.body.webkitRequestFullScreen()
+	
+	document.body.onwebkitfullscreenchange = ->
+		this.classList.toggle('full-screen')

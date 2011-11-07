@@ -11,6 +11,9 @@
       position: relative;
       top: 2px;
     }
+    .container .fullScreen {
+      display: inline-block;
+    }
 }
  {
   boz-sizing: border-box;
@@ -22,6 +25,10 @@
 .container input {
   -moz-box-sizing: content-box;
 }
+.container .fullScreen {
+  display: none;
+  margin-top: 5px;
+}
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   .container input {
     padding-right: 4px !important;
@@ -32,4 +39,10 @@
     position: relative;
     top: 2px;
   }
+  .container .fullScreen {
+    display: inline-block;
+  }
+}
+.full-screen .fullScreen {
+  display: none;
 }
