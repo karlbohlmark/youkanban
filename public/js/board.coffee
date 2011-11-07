@@ -119,3 +119,39 @@ $ ->
 			false
 			)(bin)
 #-------------------/ DRAG AND DROP ----------------
+
+#------------------ PROJECT DROPDOWN ---------------
+$ ->
+	youtrack.getProjects (projects)->
+		if(!Array.isArray(projects))
+			p = projects.project
+			$('.project-chooser')
+				.find('.dropdown-menu li').remove().end()
+				.find('.dropdown-toggle')
+					.text(p['@name'])
+					.attr('data-id', p['@shortName'])
+					.end()
+
+
+#-----------------/ PROJECT DROPDOWN ---------------
+
+$ ->
+	$('.dropdown-menu').on 'click', 'a', (e)->
+		toggle = $(this).closest('.dropdown').find('.dropdown-toggle')
+		text = toggle.text()
+		id = toggle.attr('data-id')
+		toggle
+			.text($(this).text())
+			.attr('data-id', $(this).attr('data-id'))
+		menu = $(this).closest('.dropdown-menu')
+		item = $(this).remove()
+		item.text(text).attr('data-id', id)
+		
+		menu.append($('<li></li>').append(item))
+		$('.board')
+			.removeClass(id)
+			.addClass(toggle.attr('data-id'))
+
+	$('.tasks').on 'click', '.task', ->
+		location.href = 'http://localhost:8282/issue/' + $(this).attr('id')
+

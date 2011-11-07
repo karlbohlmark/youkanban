@@ -22,7 +22,7 @@ phase-color= #6a6
 		
 		.task
 			&.filtered-out
-				opacity 0.3
+				opacity 0.25
 			border 2px solid phase-color
 			border-radius 4px
 			margin-top 7px
@@ -33,7 +33,20 @@ phase-color= #6a6
 	for phase in 1..5
 		.phase:nth-child({phase})
 			background-color: lighten(phase-color,20% * (6- phase))
-	
+
+	&.compact
+		.task
+			h2
+				line-height 1.2
+				font-size 20px
+				margin-bottom 4px
+			padding-top 4px
+			padding-bottom 4px
+
+			p
+				display none
+				padding-bottom 0px
+
 .loading-overlay
 	display none
 	position absolute

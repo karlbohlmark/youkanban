@@ -157,4 +157,30 @@
     }
     return _results;
   });
+  $(function() {
+    return youtrack.getProjects(function(projects) {
+      var p;
+      if (!Array.isArray(projects)) {
+        p = projects.project;
+        return $('.project-chooser').find('.dropdown-menu li').remove().end().find('.dropdown-toggle').text(p['@name']).attr('data-id', p['@shortName']).end();
+      }
+    });
+  });
+  $(function() {
+    $('.dropdown-menu').on('click', 'a', function(e) {
+      var id, item, menu, text, toggle;
+      toggle = $(this).closest('.dropdown').find('.dropdown-toggle');
+      text = toggle.text();
+      id = toggle.attr('data-id');
+      toggle.text($(this).text()).attr('data-id', $(this).attr('data-id'));
+      menu = $(this).closest('.dropdown-menu');
+      item = $(this).remove();
+      item.text(text).attr('data-id', id);
+      menu.append($('<li></li>').append(item));
+      return $('.board').removeClass(id).addClass(toggle.attr('data-id'));
+    });
+    return $('.tasks').on('click', '.task', function() {
+      return location.href = 'http://localhost:8282/issue/' + $(this).attr('id');
+    });
+  });
 }).call(this);

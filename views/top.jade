@@ -3,24 +3,20 @@
         .topbar-inner
           .container
             ul.nav
-              li.active.dropdown
+              li.active.dropdown.project-chooser
                 h3
                   a.dropdown-toggle(href='#') Experis
-                ul.dropdown-menu.project-chooser
+                ul.dropdown-menu
                   li
-                    a(href='#') PowerCast
-                  li
-                    a(href='#') PowerBase
+                    a(href='#', data-id="PC") PowerCast
             ul.nav
               li.active
                 a(href='#') Kanban
               li.dropdown
-                a.dropdown-toggle(href='#') Spacious
+                a.dropdown-toggle(href='#', data-id='spacious') Spacious
                 ul.dropdown-menu
                   li
-                    a(href='#') Compact
-                  li
-                    a(href='#') Something else here
+                    a(href='#', data-id='compact') Compact
                   //
                     li.divider
                   
