@@ -1,5 +1,6 @@
 .topbar-wrapper {
   height: 40px;
+  position: absolute;
 }
 .container@media screen and (-webkit-min-device-pixel-ratio:0) {
     .container input {

@@ -8,6 +8,7 @@ mixin tasks(tasks)
 mixin phases(phases)
 	- each phase, index in phases
 		.phase(data-phase="#{phase.name}",class='_' + ((index+1) + 'of' + phases.length))
+			h3.title= phase.name
 			mixin tasks(phase.tasks)
 
 

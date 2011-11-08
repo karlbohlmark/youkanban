@@ -11,12 +11,18 @@ body
 		height 100%
 		li
 			list-style-type none
-			
+		>.title
+			position relative
+			top 40px
+			margin-bottom -5px
+			text-align center
 
 	
 	.tasks
 		margin 0
-		height 100%
+		position relative
+		top 40px
+
 		&.ui-state-hover
 			opacity 80%
 		
@@ -30,8 +36,11 @@ body
 			margin-top 7px
 			padding 10px
 			h2
-				margin 0
-	
+				margin 0 0 5px
+				line-height 1.2
+			p
+				margin-bottom 0px
+
 	for noOfPhases in 2..8
 		for phase in 1..noOfPhases
 			.phase._{phase}of{noOfPhases}
