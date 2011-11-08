@@ -1,8 +1,10 @@
+body {
+  background-color: #6a6;
+}
 .board .phase {
   display: block;
   float: left;
   height: 100%;
-  width: 20%;
 }
 .board .phase li {
   list-style-type: none;
@@ -27,20 +29,145 @@
 .board .tasks .task h2 {
   margin: 0;
 }
-.board .phase:nth-child(1) {
+.board .phase._1of2 {
+  width: 50%;
   background-color: #fff;
 }
-.board .phase:nth-child(2) {
+.board .phase._2of2 {
+  width: 50%;
+  background-color: #b3d4b3;
+}
+.board .phase._1of3 {
+  width: 33.333333333333336%;
+  background-color: #fff;
+}
+.board .phase._2of3 {
+  width: 33.333333333333336%;
+  background-color: #cce3cc;
+}
+.board .phase._3of3 {
+  width: 33.333333333333336%;
+  background-color: #99c699;
+}
+.board .phase._1of4 {
+  width: 25%;
+  background-color: #fff;
+}
+.board .phase._2of4 {
+  width: 25%;
+  background-color: #d9ead9;
+}
+.board .phase._3of4 {
+  width: 25%;
+  background-color: #b3d4b3;
+}
+.board .phase._4of4 {
+  width: 25%;
+  background-color: #8cbf8c;
+}
+.board .phase._1of5 {
+  width: 20%;
+  background-color: #fff;
+}
+.board .phase._2of5 {
+  width: 20%;
   background-color: #e0eee0;
 }
-.board .phase:nth-child(3) {
+.board .phase._3of5 {
+  width: 20%;
   background-color: #c2ddc2;
 }
-.board .phase:nth-child(4) {
+.board .phase._4of5 {
+  width: 20%;
   background-color: #a3cca3;
 }
-.board .phase:nth-child(5) {
+.board .phase._5of5 {
+  width: 20%;
   background-color: #85bb85;
+}
+.board .phase._1of6 {
+  width: 16.666666666666668%;
+  background-color: #fff;
+}
+.board .phase._2of6 {
+  width: 16.666666666666668%;
+  background-color: #e6f1e6;
+}
+.board .phase._3of6 {
+  width: 16.666666666666668%;
+  background-color: #cce3cc;
+}
+.board .phase._4of6 {
+  width: 16.666666666666668%;
+  background-color: #b3d4b3;
+}
+.board .phase._5of6 {
+  width: 16.666666666666668%;
+  background-color: #99c699;
+}
+.board .phase._6of6 {
+  width: 16.666666666666668%;
+  background-color: #80b880;
+}
+.board .phase._1of7 {
+  width: 14.285714285714286%;
+  background-color: #fff;
+}
+.board .phase._2of7 {
+  width: 14.285714285714286%;
+  background-color: #e9f3e9;
+}
+.board .phase._3of7 {
+  width: 14.285714285714286%;
+  background-color: #d3e7d3;
+}
+.board .phase._4of7 {
+  width: 14.285714285714286%;
+  background-color: #bddbbd;
+}
+.board .phase._5of7 {
+  width: 14.285714285714286%;
+  background-color: #a8cea8;
+}
+.board .phase._6of7 {
+  width: 14.285714285714286%;
+  background-color: #92c292;
+}
+.board .phase._7of7 {
+  width: 14.285714285714286%;
+  background-color: #7cb67c;
+}
+.board .phase._1of8 {
+  width: 12.5%;
+  background-color: #fff;
+}
+.board .phase._2of8 {
+  width: 12.5%;
+  background-color: #ecf4ec;
+}
+.board .phase._3of8 {
+  width: 12.5%;
+  background-color: #d9ead9;
+}
+.board .phase._4of8 {
+  width: 12.5%;
+  background-color: #c6dfc6;
+}
+.board .phase._5of8 {
+  width: 12.5%;
+  background-color: #b3d4b3;
+}
+.board .phase._6of8 {
+  width: 12.5%;
+  background-color: #9fca9f;
+}
+.board .phase._7of8 {
+  width: 12.5%;
+  background-color: #8cbf8c;
+}
+.board .phase._8of8 {
+  width: 12.5%;
+  background-color: #79b579;
 }
 .board.compact .task {
   padding-top: 4px;

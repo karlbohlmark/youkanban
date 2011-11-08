@@ -1,12 +1,14 @@
 phase-color= #6a6
 
+body
+	background-color #6a6
+
 .board
 
 	.phase
 		display block
 		float left
 		height 100%
-		width 20%
 		li
 			list-style-type none
 			
@@ -30,9 +32,11 @@ phase-color= #6a6
 			h2
 				margin 0
 	
-	for phase in 1..5
-		.phase:nth-child({phase})
-			background-color: lighten(phase-color,20% * (6- phase))
+	for noOfPhases in 2..8
+		for phase in 1..noOfPhases
+			.phase._{phase}of{noOfPhases}
+				width: (100%/noOfPhases)
+				background-color: lighten(phase-color,(100%/noOfPhases) * (noOfPhases + 1 - phase))
 
 	&.compact
 		.task

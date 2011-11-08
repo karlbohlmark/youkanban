@@ -1,5 +1,5 @@
 (function() {
-  var getIssuesForProject, getProjects;
+  var executeIssueCommand, getIssuesForProject, getProjectStates, getProjects;
   getIssuesForProject = function(projectId, cb) {
     return $.ajax({
       'url': "/rest/issue/byproject/" + projectId,
@@ -26,8 +26,39 @@
       'dataType': 'json'
     });
   };
+  executeIssueCommand = function(issue, command, cb) {
+    return $.ajax({
+      url: "/rest/issue/" + issue + "/execute",
+      data: "command=" + command,
+      type: 'POST',
+      success: function(response) {
+        if (cb != null) {
+          return cb(null, response);
+        }
+      },
+      error: function(response) {
+        if (cb != null) {
+          return cb(response);
+        }
+      }
+    });
+  };
+  getProjectStates = function(project, cb) {
+    return $.ajax({
+      'url': "/rest/project/states",
+      'dataType': 'json',
+      success: function(response) {
+        return cb(null, response);
+      },
+      error: function(response) {
+        return cb(response);
+      }
+    });
+  };
   window.youtrack = {
     getIssuesForProject: getIssuesForProject,
-    getProjects: getProjects
+    getProjects: getProjects,
+    executeIssueCommand: executeIssueCommand,
+    getProjectStates: getProjectStates
   };
 }).call(this);

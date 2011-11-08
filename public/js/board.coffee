@@ -1,5 +1,18 @@
 window.hub = new EventEmitter2({ verbose: true })
 q = document.querySelectorAll.bind(document)
+q1 = document.querySelector.bind(document)
+byId = document.getElementById.bind(document)
+
+view =
+	getTask: (id)-> byId(id)
+	getPhase: (phase)-> q1("[data-phase='#{phase}']")
+	getTaskList: (phase)-> q1("[data-phase='#{phase}'] .tasks")
+	moveTask: (task, toPhase)->
+		task = @getTask(task)
+		toPhaseList = @getTaskList(toPhase)
+		toPhaseList.appendChild(task)
+	
+
 String::contains ?= (s)-> this.indexOf(s)!=-1
 
 hub.on 'task-filter-changed', (filterEvent) ->
@@ -9,12 +22,11 @@ hub.on 'task-filter-changed', (filterEvent) ->
 
 
 hub.on 'task-move', (moveEvent) ->
-	$.ajax
-		url: "/rest/issue/#{moveEvent.task}/execute"
-		data: "command=#{moveEvent.toPhase}"
-		type: 'POST'
-		success: ->
-		error: -> 'move the task back?'
+	#UDPATE YOUTRACK
+	youtrack.executeIssueCommand moveEvent.task, moveEvent.toPhase
+	
+	# MOVE DOM ELEMENT
+	view.moveTask(moveEvent.task, moveEvent.toPhase)
 
 # ----------------- EVENTS -----------------
 hub.on 'clear-tasks', ->
@@ -48,63 +60,28 @@ extractIssues = (issuesResponse)->
 
 hub.on 'load-project', (p) ->
 	hub.emit( 'clear-tasks' )
-	youtrack.getIssuesForProject p, (issuesResponse)->
-		hub.emit( 'task-add', issue ) for issue in extractIssues(issuesResponse)
+
+	resource.view 'board.jade', (viewStr)->
+		jade = require('jade')
+		fn = jade.compile(viewStr)
+		youtrack.getProjectStates p, (_, states)->
+			jade = require('jade')
+			boardFn = jade.compile(viewStr)
+			i=0
+			phases = ( { name: state['@name'], tasks:[]} for state in states.state when state['@resolved']=="false" )
+			rendered = boardFn({phases})
+			$('.board').replaceWith($(rendered))
+			
+			youtrack.getIssuesForProject p, (issuesResponse)->
+				hub.emit( 'task-add', issue ) for issue in extractIssues(issuesResponse)
+
+				window.board.initDragAndDrop()
 #--------------------------------------------
 
 #-------------- LOAD ISSUES ----------------
 $ ->
 	hub.emit('load-project', 'EX')
 #-------------------------------------------
-
-#-------------------- DRAG AND DROP -----------------
-$ ->
-	tasks = document.querySelectorAll(".task")
-	el = null
-	t = 0
-
-	while t < tasks.length
-		el = tasks[t]
-		el.setAttribute "draggable", "true"
-		el.addEventListener "dragstart", (e) ->
-			e.dataTransfer.effectAllowed = "copy"
-			e.dataTransfer.setData "Text", @id
-		t++
-
-	bins = [].slice.call( document.querySelectorAll(".tasks") )
-	
-	for bin in bins
-		bin.addEventListener "dragover", (e) ->
-			e.preventDefault()  if e.preventDefault
-			e.dataTransfer.dropEffect = "copy"
-			false
-
-		bin.addEventListener "dragenter", (e) ->
-			false
-
-		bin.addEventListener "dragleave", ->
-
-		bin.addEventListener "drop",  ((bin) -> (e) ->
-			e.stopPropagation()
-			e.preventDefault()
-			id = e.dataTransfer.getData("Text")
-			el = document.getElementById(id)
-			p = el.parentNode
-			p.removeChild el
-
-			while (p = p.parentNode) && !p.dataset.phase
-				null
-
-			to = bin
-			while (to = to.parentNode) && !to.dataset.phase
-				null
-			hub.emit('task-move', {task: id, toPhase: to.dataset.phase, fromPhase: p.dataset.phase})
-
-			bin.appendChild(el)
-
-			false
-			)(bin)
-#-------------------/ DRAG AND DROP ----------------
 
 #------------------ PROJECT DROPDOWN ---------------
 $ ->
@@ -149,3 +126,6 @@ $ ->
 	
 	document.body.onwebkitfullscreenchange = ->
 		this.classList.toggle('full-screen')
+
+	window.board.initDragAndDrop()
+	

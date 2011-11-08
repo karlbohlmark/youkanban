@@ -1,0 +1,20 @@
+mixin tasks(tasks)
+	ul.tasks
+		- each task in tasks
+			li.task(id="task-#{task.id}")
+				h2.title= task.title
+				p.body Lite text här
+
+mixin phases(phases)
+	- each phase, index in phases
+		.phase(data-phase="#{phase.name}",class='_' + ((index+1) + 'of' + phases.length))
+			mixin tasks(phase.tasks)
+
+
+//---------- Start of page -----------
+
+.board
+	mixin phases(phases)
+
+.loading-overlay
+	.loading-message Loading...
