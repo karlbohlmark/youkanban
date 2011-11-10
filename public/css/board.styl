@@ -30,7 +30,7 @@ body
 		
 		.task
 			&.filtered-out
-				opacity 0.25
+				display none
 			border 2px solid phase-color
 			border-radius 4px
 			margin-top 7px
@@ -48,7 +48,7 @@ body
 				background-color: lighten(phase-color,(100%/noOfPhases) * (noOfPhases + 1 - phase))
 
 	&.compact
-		.task
+		.tasks
 			h2
 				line-height 1.2
 				font-size 20px

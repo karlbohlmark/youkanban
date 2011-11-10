@@ -47,34 +47,20 @@ hub.on 'task-add', (taskAddEvent) ->
 	phase = $("[data-phase='#{task.phase}']")
 	phase.find('.tasks').append(newTask)
 
-getField = (fieldName)-> 
-	(i)-> i.field.filter((f)->f['@name']==fieldName)[0].value
-
-extractIssues = (issuesResponse)->
-	{ 
-		id: i['@id'], 
-		title: getField('summary')(i), 
-		body: getField('description')(i), 
-		phase: getField('State')(i) 
-	} for i in issuesResponse.issue
-
 hub.on 'load-project', (p) ->
 	hub.emit( 'clear-tasks' )
 
 	resource.view 'board.jade', (viewStr)->
-		jade = require('jade')
-		fn = jade.compile(viewStr)
 		youtrack.getProjectStates p, (_, states)->
 			jade = require('jade')
 			boardFn = jade.compile(viewStr)
 			i=0
-			phases = ( { name: state['@name'], tasks:[]} for state in states.state when state['@resolved']=="false" )
+			phases = ( { name: state, tasks:[]} for state in states ) #( { name: state['@name'], tasks:[]} for state in states.state when state['@resolved']=="false" )
 			rendered = boardFn({phases})
 			$('.board').replaceWith($(rendered))
 			
-			youtrack.getIssuesForProject p, (issuesResponse)->
-				hub.emit( 'task-add', issue ) for issue in extractIssues(issuesResponse)
-
+			youtrack.getIssuesForProject p, phases, (issues)->
+				hub.emit( 'task-add', issue ) for issue in issues 
 				window.board.initDragAndDrop()
 #--------------------------------------------
 

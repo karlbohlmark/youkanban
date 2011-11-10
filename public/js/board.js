@@ -1,5 +1,5 @@
 (function() {
-  var byId, extractIssues, getField, q, q1, view, _ref;
+  var byId, q, q1, view, _ref;
   window.hub = new EventEmitter2({
     verbose: true
   });
@@ -57,51 +57,23 @@
     phase = $("[data-phase='" + task.phase + "']");
     return phase.find('.tasks').append(newTask);
   });
-  getField = function(fieldName) {
-    return function(i) {
-      return i.field.filter(function(f) {
-        return f['@name'] === fieldName;
-      })[0].value;
-    };
-  };
-  extractIssues = function(issuesResponse) {
-    var i, _i, _len, _ref2, _results;
-    _ref2 = issuesResponse.issue;
-    _results = [];
-    for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-      i = _ref2[_i];
-      _results.push({
-        id: i['@id'],
-        title: getField('summary')(i),
-        body: getField('description')(i),
-        phase: getField('State')(i)
-      });
-    }
-    return _results;
-  };
   hub.on('load-project', function(p) {
     hub.emit('clear-tasks');
     return resource.view('board.jade', function(viewStr) {
-      var fn, jade;
-      jade = require('jade');
-      fn = jade.compile(viewStr);
       return youtrack.getProjectStates(p, function(_, states) {
-        var boardFn, i, phases, rendered, state;
+        var boardFn, i, jade, phases, rendered, state;
         jade = require('jade');
         boardFn = jade.compile(viewStr);
         i = 0;
         phases = (function() {
-          var _i, _len, _ref2, _results;
-          _ref2 = states.state;
+          var _i, _len, _results;
           _results = [];
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            state = _ref2[_i];
-            if (state['@resolved'] === "false") {
-              _results.push({
-                name: state['@name'],
-                tasks: []
-              });
-            }
+          for (_i = 0, _len = states.length; _i < _len; _i++) {
+            state = states[_i];
+            _results.push({
+              name: state,
+              tasks: []
+            });
           }
           return _results;
         })();
@@ -109,11 +81,10 @@
           phases: phases
         });
         $('.board').replaceWith($(rendered));
-        return youtrack.getIssuesForProject(p, function(issuesResponse) {
-          var issue, _i, _len, _ref2;
-          _ref2 = extractIssues(issuesResponse);
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            issue = _ref2[_i];
+        return youtrack.getIssuesForProject(p, phases, function(issues) {
+          var issue, _i, _len;
+          for (_i = 0, _len = issues.length; _i < _len; _i++) {
+            issue = issues[_i];
             hub.emit('task-add', issue);
           }
           return window.board.initDragAndDrop();

@@ -32,7 +32,7 @@ body {
   padding: 10px;
 }
 .board .tasks .task.filtered-out {
-  opacity: 0.25;
+  display: none;
 }
 .board .tasks .task h2 {
   margin: 0 0 5px;
@@ -181,16 +181,16 @@ body {
   width: 12.5%;
   background-color: #79b579;
 }
-.board.compact .task {
+.board.compact .tasks {
   padding-top: 4px;
   padding-bottom: 4px;
 }
-.board.compact .task h2 {
+.board.compact .tasks h2 {
   line-height: 1.2;
   font-size: 20px;
   margin-bottom: 4px;
 }
-.board.compact .task p {
+.board.compact .tasks p {
   display: none;
   padding-bottom: 0px;
 }
