@@ -1,5 +1,5 @@
 getField = (fieldName)-> 
-	(i)-> i.field.filter((f)->f['@name']==fieldName)[0].value
+	(i)-> i.field.filter((f)->f['@name']==fieldName)[0]?.value
 
 extractIssue = (i)->
 	{ 
@@ -13,7 +13,7 @@ getIssuesForProject = (projectId, phases, cb)->
 	deferreds = []
 	for phase in phases
 		deferreds.push $.ajax(
-			'url': "/rest/issue/byproject/#{projectId}?filter=State%3A+#{encodeURIComponent(phase.name)}"
+			'url': "/rest/issue/byproject/#{projectId}?filter=State%3A%7B#{phase.name}%7D"
 			'dataType': 'json')
 
 	jQuery.when.apply(jQuery, deferreds).done (issues...)->
@@ -45,9 +45,11 @@ executeIssueCommand = (issue, command, cb)->
 
 getProjectStates = (project, cb) ->
 	$.ajax
-		'url': "/config"
+		'url': "/rest/admin/customfield/stateBundle/Experis%20States"
 		'dataType': 'json'
-		success: (response)-> cb(null, response.youtrack.phases)
+		success: (response)-> 
+			states = ( state['$'] for state in response.state when state['@isResolved']=="false" )
+			cb(null, states)
 		error: (response)-> cb(response)
 ###
 	$.ajax

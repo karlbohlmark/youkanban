@@ -93,10 +93,11 @@
     });
   });
   $(function() {
-    return hub.emit('load-project', 'EX');
+    return hub.emit('load-project', 'exp');
   });
   $(function() {
-    return youtrack.getProjects(function(projects) {
+    return;
+	return youtrack.getProjects(function(projects) {
       var p;
       if (!Array.isArray(projects)) {
         p = projects.project;

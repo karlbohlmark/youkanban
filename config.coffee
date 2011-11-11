@@ -1,5 +1,5 @@
 module.exports = 
 	youtrack:
 		port: 8282
-		phases: ['devStart', 'Reopened', 'working', 'devDone', 'test']
+		phases: ['Submitted', 'Start Development', 'In Progress', 'Closed', 'In PROD']
 	port: 8000
