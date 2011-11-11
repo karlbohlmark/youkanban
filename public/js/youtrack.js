@@ -1,6 +1,27 @@
 (function() {
-  var executeIssueCommand, extractIssue, getField, getIssuesForProject, getProjectStates, getProjects;
+  var apiCall, executeIssueCommand, extractIssue, getField, getIssuesForProject, getProjectStates, getProjects, localCall;
   var __slice = Array.prototype.slice;
+  $.ajaxSetup({
+    cache: true
+  });
+  apiCall = function(options, cb) {
+    return $.request.json({
+      method: options.method || 'GET',
+      url: options.url,
+      body: options.body || '',
+      headers: options.headers || {
+        'x-youkanban-proxy': 'youtrack'
+      }
+    }, function(err, resp, result) {
+      if (cb != null) {
+        return cb(result);
+      }
+    });
+  };
+  localCall = function(options, cb) {
+    options.headers = {};
+    return apiCall(options, cb);
+  };
   getField = function(fieldName) {
     return function(i) {
       return i.field.filter(function(f) {
@@ -21,9 +42,8 @@
     deferreds = [];
     for (_i = 0, _len = phases.length; _i < _len; _i++) {
       phase = phases[_i];
-      deferreds.push($.ajax({
-        'url': "/rest/issue/byproject/" + projectId + "?filter=State%3A+" + (encodeURIComponent(phase.name)),
-        'dataType': 'json'
+      deferreds.push(apiCall({
+        'url': "/rest/issue/byproject/" + projectId + "?filter=State%3A+" + (encodeURIComponent(phase))
       }));
     }
     return jQuery.when.apply(jQuery, deferreds).done(function() {
@@ -65,55 +85,44 @@
     });
   };
   getProjects = function(cb) {
-    return $.ajax({
-      'url': "/rest/project/all",
-      'success': function(res) {
-        return cb(res);
-      },
-      'error': function(res) {
-        console.log("failed to get projects");
-        return console.log(res);
-      },
-      'dataType': 'json'
+    return apiCall({
+      'url': "/rest/project/all"
+    }, function(res) {
+      return cb(res);
     });
   };
   executeIssueCommand = function(issue, command, cb) {
-    return $.ajax({
+    return apiCall({
       url: "/rest/issue/" + issue + "/execute",
-      data: "command=" + command,
-      type: 'POST',
-      success: function(response) {
-        if (cb != null) {
-          return cb(null, response);
-        }
-      },
-      error: function(response) {
-        if (cb != null) {
-          return cb(response);
-        }
+      method: "POST",
+      body: "command=" + command
+    }, function(res) {
+      if (cb != null) {
+        return cb(null, response);
       }
     });
   };
   getProjectStates = function(project, cb) {
-    return $.ajax({
-      'url': "/config",
-      'dataType': 'json',
-      success: function(response) {
-        return cb(null, response.youtrack.phases);
-      },
-      error: function(response) {
-        return cb(response);
-      }
+    return localCall({
+      'url': "/rest/admin/customfield/stateBundle/ExperisStates"
+    }, function(response) {
+      var phases, state;
+      phases = (function() {
+        var _i, _len, _ref, _results;
+        _ref = response.state;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          state = _ref[_i];
+          if (state['@isResolved'] === 'false') {
+            _results.push(state['$']);
+          }
+        }
+        return _results;
+      })();
+      return cb(null, phases);
     });
   };
-  /*
-  	$.ajax
-  		'url': "/rest/project/states"
-  		'dataType': 'json'
-  		success: (response)-> cb(null, response)
-  		error: (response)-> cb(response)
-  */
-  window.youtrack = {
+  window.api = {
     getIssuesForProject: getIssuesForProject,
     getProjects: getProjects,
     executeIssueCommand: executeIssueCommand,

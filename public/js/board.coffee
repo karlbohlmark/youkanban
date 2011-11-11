@@ -3,6 +3,8 @@ q = document.querySelectorAll.bind(document)
 q1 = document.querySelector.bind(document)
 byId = document.getElementById.bind(document)
 
+at = hub.on.bind(hub)
+
 view =
 	getTask: (id)-> byId(id)
 	getPhase: (phase)-> q1("[data-phase='#{phase}']")
@@ -15,24 +17,24 @@ view =
 
 String::contains ?= (s)-> this.indexOf(s)!=-1
 
-hub.on 'task-filter-changed', (filterEvent) ->
+at 'task-filter-changed', (filterEvent) ->
 	tasks = [].slice.call(q('.task'))
 	for task in tasks
 		if !task.textContent.toUpperCase().contains(filterEvent.query.toUpperCase()) then task.classList.add('filtered-out') else task.classList.remove('filtered-out')
 
 
-hub.on 'task-move', (moveEvent) ->
-	#UDPATE YOUTRACK
-	youtrack.executeIssueCommand moveEvent.task, moveEvent.toPhase
+at 'task-move', (moveEvent) ->
+	#UDPATE ISSUE
+	api.executeIssueCommand moveEvent.task, moveEvent.fromPhase, moveEvent.toPhase
 	
 	# MOVE DOM ELEMENT
 	view.moveTask(moveEvent.task, moveEvent.toPhase)
 
 # ----------------- EVENTS -----------------
-hub.on 'clear-tasks', ->
+at 'clear-tasks', ->
 	$('.task').remove()
 
-hub.on 'task-add', (taskAddEvent) ->
+at 'task-add', (taskAddEvent) ->
 	task = taskAddEvent
 
 	newTask = $("""
@@ -47,11 +49,11 @@ hub.on 'task-add', (taskAddEvent) ->
 	phase = $("[data-phase='#{task.phase}']")
 	phase.find('.tasks').append(newTask)
 
-hub.on 'load-project', (p) ->
+at 'load-project', (p) ->
 	hub.emit( 'clear-tasks' )
 
 	resource.view 'board.jade', (viewStr)->
-		youtrack.getProjectStates p, (_, states)->
+		api.getProjectStates p, (_, states)->
 			jade = require('jade')
 			boardFn = jade.compile(viewStr)
 			i=0
@@ -59,7 +61,7 @@ hub.on 'load-project', (p) ->
 			rendered = boardFn({phases})
 			$('.board').replaceWith($(rendered))
 			
-			youtrack.getIssuesForProject p, phases, (issues)->
+			api.getIssuesForProject p, states, (issues)->
 				hub.emit( 'task-add', issue ) for issue in issues 
 				window.board.initDragAndDrop()
 #--------------------------------------------
@@ -71,7 +73,7 @@ $ ->
 
 #------------------ PROJECT DROPDOWN ---------------
 $ ->
-	youtrack.getProjects (projects)->
+	api.getProjects (projects)->
 		if(!Array.isArray(projects))
 			p = projects.project
 			$('.project-chooser')
@@ -85,6 +87,8 @@ $ ->
 #-----------------/ PROJECT DROPDOWN ---------------
 
 $ ->
+	window.location.href = 'https://github.com/login/oauth/authorize?client_id=1875e74c695bc9d36482' if not window.location.search?
+
 	$('.dropdown-menu').on 'click', 'a', (e)->
 		toggle = $(this).closest('.dropdown').find('.dropdown-toggle')
 		text = toggle.text()
@@ -101,7 +105,8 @@ $ ->
 			.removeClass(id)
 			.addClass(toggle.attr('data-id'))
 
-	$('.tasks').on 'click', '.task', ->
+	$('body').on 'click', '.task', ->
+		
 		location.href = 'http://localhost:8282/issue/' + $(this).attr('id')
 
 	$('.container').on 'dblclick', ->

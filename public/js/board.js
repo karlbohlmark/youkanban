@@ -1,11 +1,12 @@
 (function() {
-  var byId, q, q1, view, _ref;
+  var at, byId, q, q1, view, _ref;
   window.hub = new EventEmitter2({
     verbose: true
   });
   q = document.querySelectorAll.bind(document);
   q1 = document.querySelector.bind(document);
   byId = document.getElementById.bind(document);
+  at = hub.on.bind(hub);
   view = {
     getTask: function(id) {
       return byId(id);
@@ -28,7 +29,7 @@
       return this.indexOf(s) !== -1;
     };
   }
-  hub.on('task-filter-changed', function(filterEvent) {
+  at('task-filter-changed', function(filterEvent) {
     var task, tasks, _i, _len, _results;
     tasks = [].slice.call(q('.task'));
     _results = [];
@@ -38,14 +39,14 @@
     }
     return _results;
   });
-  hub.on('task-move', function(moveEvent) {
-    youtrack.executeIssueCommand(moveEvent.task, moveEvent.toPhase);
+  at('task-move', function(moveEvent) {
+    api.executeIssueCommand(moveEvent.task, moveEvent.fromPhase, moveEvent.toPhase);
     return view.moveTask(moveEvent.task, moveEvent.toPhase);
   });
-  hub.on('clear-tasks', function() {
+  at('clear-tasks', function() {
     return $('.task').remove();
   });
-  hub.on('task-add', function(taskAddEvent) {
+  at('task-add', function(taskAddEvent) {
     var newTask, phase, task;
     task = taskAddEvent;
     newTask = $("<li class=\"task\" id=\"" + task.id + "\" draggable=\"true\"><h2 class=\"title\">" + task.title + "</h2><p class=\"body\">" + task.body + "</p></li>");
@@ -57,10 +58,10 @@
     phase = $("[data-phase='" + task.phase + "']");
     return phase.find('.tasks').append(newTask);
   });
-  hub.on('load-project', function(p) {
+  at('load-project', function(p) {
     hub.emit('clear-tasks');
     return resource.view('board.jade', function(viewStr) {
-      return youtrack.getProjectStates(p, function(_, states) {
+      return api.getProjectStates(p, function(_, states) {
         var boardFn, i, jade, phases, rendered, state;
         jade = require('jade');
         boardFn = jade.compile(viewStr);
@@ -81,7 +82,7 @@
           phases: phases
         });
         $('.board').replaceWith($(rendered));
-        return youtrack.getIssuesForProject(p, phases, function(issues) {
+        return api.getIssuesForProject(p, states, function(issues) {
           var issue, _i, _len;
           for (_i = 0, _len = issues.length; _i < _len; _i++) {
             issue = issues[_i];
@@ -96,7 +97,7 @@
     return hub.emit('load-project', 'EX');
   });
   $(function() {
-    return youtrack.getProjects(function(projects) {
+    return api.getProjects(function(projects) {
       var p;
       if (!Array.isArray(projects)) {
         p = projects.project;
@@ -105,6 +106,9 @@
     });
   });
   $(function() {
+    if (!(window.location.search != null)) {
+      window.location.href = 'https://github.com/login/oauth/authorize?client_id=1875e74c695bc9d36482';
+    }
     $('.dropdown-menu').on('click', 'a', function(e) {
       var id, item, menu, text, toggle;
       toggle = $(this).closest('.dropdown').find('.dropdown-toggle');
@@ -117,7 +121,7 @@
       menu.append($('<li></li>').append(item));
       return $('.board').removeClass(id).addClass(toggle.attr('data-id'));
     });
-    $('.tasks').on('click', '.task', function() {
+    $('body').on('click', '.task', function() {
       return location.href = 'http://localhost:8282/issue/' + $(this).attr('id');
     });
     $('.container').on('dblclick', function() {
