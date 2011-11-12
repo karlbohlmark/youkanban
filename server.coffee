@@ -1,6 +1,5 @@
 express 	= require 'express'
 public_dir 	= __dirname + '/public'
-httpProxy 	= require 'http-proxy'
 config		= require "./config"
 request 	= require 'request'
 
@@ -10,8 +9,6 @@ host = config.host || 'localhost'
 app = express.createServer()
 
 app.use express.static(public_dir)
-
-#app.use express.bodyParser()
 
 app.set 'views', public_dir + '/views'
 
@@ -34,13 +31,14 @@ app.get '/oauth', (req, res) ->
 				res.cookie('oauth-token', body)
 				res.redirect('/kanban?authenticated=yup')
 
+###
 # PROXY TO YOUTRACK
 httpProxy.createServer( (req, res, proxy) ->
 	proxy.proxyRequest req, res,
 		host: 'localhost'
 		port: if req.url.substr(0, 5) == '/rest' then 8282 else 8080
 ).listen(port)
-
+###
 
 # EXTERNAL API CALLS
 app.use((req, res)->
