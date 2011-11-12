@@ -28,8 +28,8 @@ app.get '/oauth', (req, res) ->
 				client_secret: 'edc264f96b36bdd3305f92103fbca2c01419380b'
 		,	(err, resp, body)->
 				console.log(body)
-				res.cookie('oauth-token', body)
-				res.redirect('/kanban?authenticated=yup')
+				res.cookie('oauth-token', body.access_token)
+				res.redirect("/kanban?token=#{body.access_token}")
 
 ###
 # PROXY TO YOUTRACK
