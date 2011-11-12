@@ -24,7 +24,7 @@ app.get '/oauth', (req, res) ->
 			url: 'https://github.com/login/oauth/access_token'
 			json:
 				client_id: '1875e74c695bc9d36482'
-				code: req.get('code')
+				code: req.param('code')
 				client_secret: 'edc264f96b36bdd3305f92103fbca2c01419380b'
 		,	(err, resp, body)->
 				console.log(body)
