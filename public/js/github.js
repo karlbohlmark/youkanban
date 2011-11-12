@@ -18,6 +18,7 @@
   apiCall = function(options, cb) {
     return $.request({
       method: options.method || 'GET',
+      body: options.body,
       url: 'https://api.github.com' + options.url + '?' + document.cookie.replace('oauth-', 'access_')
     }, function(err, resp, result) {
       if (cb != null) {
