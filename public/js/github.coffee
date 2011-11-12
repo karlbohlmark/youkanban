@@ -10,6 +10,7 @@ $.ajaxSetup({cache:true})
 apiCall = (options, cb)->
 	$.request 
 			method: options.method || 'GET'
+			body: options.body || void(0)
 			url: 'https://api.github.com' + options.url + '?' + document.cookie.replace('oauth-', 'access_')
 		,
 			(err, resp, result)->
