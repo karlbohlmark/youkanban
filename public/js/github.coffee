@@ -69,7 +69,7 @@ getProjectStates = (project, cb) ->
 		, (response) -> 
 			states = ( uglyToPrettyLabel( label.name )  for label in response when isStateLabel( label.name ) )
 			labels = response.map (l)->l.name
-			cb(null, states)
+			cb(null, states.sort())
 
 
 window.api = {

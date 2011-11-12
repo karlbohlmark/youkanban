@@ -121,7 +121,7 @@
       labels = response.map(function(l) {
         return l.name;
       });
-      return cb(null, states);
+      return cb(null, states.sort());
     });
   };
   window.api = {
