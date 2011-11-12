@@ -107,7 +107,7 @@
   });
   $(function() {
     if (!window.location.search) {
-      window.location.href = 'https://github.com/login/oauth/authorize?client_id=1875e74c695bc9d36482';
+      window.location.href = 'https://github.com/login/oauth/authorize?scope=public_repo&client_id=1875e74c695bc9d36482';
     }
     $('.dropdown-menu').on('click', 'a', function(e) {
       var id, item, menu, text, toggle;
