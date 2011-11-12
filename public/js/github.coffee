@@ -67,9 +67,11 @@ getProjectStates = (project, cb) ->
 	apiCall
 			'url': "/repos/karlbohlmark/youkanban/labels"
 		, (response) -> 
-			states = ( uglyToPrettyLabel( label.name )  for label in response when isStateLabel( label.name ) )
+			labelNames = ( label.name for label in response when isStateLabel( label.name ) )
+
+			states = ( uglyToPrettyLabel( label )  for label in labelNames.sort()  )
 			labels = response.map (l)->l.name
-			cb(null, states.sort())
+			cb(null, states)
 
 
 window.api = {

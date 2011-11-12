@@ -106,22 +106,32 @@
     return apiCall({
       'url': "/repos/karlbohlmark/youkanban/labels"
     }, function(response) {
-      var label, states;
-      states = (function() {
+      var label, labelNames, states;
+      labelNames = (function() {
         var _i, _len, _results;
         _results = [];
         for (_i = 0, _len = response.length; _i < _len; _i++) {
           label = response[_i];
           if (isStateLabel(label.name)) {
-            _results.push(uglyToPrettyLabel(label.name));
+            _results.push(label.name);
           }
+        }
+        return _results;
+      })();
+      states = (function() {
+        var _i, _len, _ref, _results;
+        _ref = labelNames.sort();
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          label = _ref[_i];
+          _results.push(uglyToPrettyLabel(label));
         }
         return _results;
       })();
       labels = response.map(function(l) {
         return l.name;
       });
-      return cb(null, states.sort());
+      return cb(null, states);
     });
   };
   window.api = {
