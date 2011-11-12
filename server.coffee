@@ -29,9 +29,8 @@ app.get '/oauth', (req, res) ->
 				client_id: '1875e74c695bc9d36482'
 				code: req.get('code')
 				client_secret: 'edc264f96b36bdd3305f92103fbca2c01419380b'
-		 ,
-		 	(err, res, body)->
-		 		console.log(body)
+		,	(err, resp, body)->
+				console.log(body)
 				res.cookie('oauth-token', body)
 				res.redirect('/kanban?authenticated=yup')
 

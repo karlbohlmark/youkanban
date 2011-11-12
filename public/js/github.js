@@ -16,12 +16,12 @@
     cache: true
   });
   apiCall = function(options, cb) {
-    return $.request.json({
+    return $.request({
       method: options.method || 'GET',
-      url: 'https://api.github.com' + options.url
+      url: 'https://api.github.com' + options.url + '?' + document.cookie.replace('oauth-', 'access_')
     }, function(err, resp, result) {
       if (cb != null) {
-        return cb(result);
+        return cb(JSON.parse(result));
       }
     });
   };

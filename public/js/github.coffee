@@ -8,12 +8,12 @@ isStateLabel = (label)-> /_.*/.test label
 $.ajaxSetup({cache:true})
 
 apiCall = (options, cb)->
-	$.request.json 
+	$.request 
 			method: options.method || 'GET'
-			url: 'https://api.github.com' + options.url
+			url: 'https://api.github.com' + options.url + '?' + document.cookie.replace('oauth-', 'access_')
 		,
 			(err, resp, result)->
-				cb(result) if cb?
+				cb( JSON.parse(result)) if cb?
 
 localCall = (options, cb)->
 	options.headers = {}
