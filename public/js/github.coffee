@@ -42,17 +42,18 @@ getIssueLabels = (labelname)->
 			(res)-> cb(null, response) if cb?
 
 executeIssueCommand = (issue, fromState, toState, cb)->
+	urlencodedIssue = issue.replace(' ', '+')
 	removeLabel = prettyToUglyLabel(fromState)
 	addLabel = prettyToUglyLabel(toState)
 	apiCall
-			url: "/repos/karlbohlmark/youkanban/issues/#{issue}/labels/#{removeLabel}"
+			url: "/repos/karlbohlmark/youkanban/issues/#{urlencodedIssue}/labels/#{removeLabel}"
 			method: 'delete'
 		,
 			(err)->
 				console.log "removing label #{removeLabel} #{if err then ' failed' else 'succeeded'}"
 
 	apiCall
-			url: "/repos/karlbohlmark/youkanban/issues/#{issue}/labels}"
+			url: "/repos/karlbohlmark/youkanban/issues/#{urlencodedIssue}/labels}"
 			method: 'post'
 			json: [addLabel]
 		,

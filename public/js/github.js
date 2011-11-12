@@ -83,17 +83,18 @@
     });
   };
   executeIssueCommand = function(issue, fromState, toState, cb) {
-    var addLabel, removeLabel;
+    var addLabel, removeLabel, urlencodedIssue;
+    urlencodedIssue = issue.replace(' ', '+');
     removeLabel = prettyToUglyLabel(fromState);
     addLabel = prettyToUglyLabel(toState);
     apiCall({
-      url: "/repos/karlbohlmark/youkanban/issues/" + issue + "/labels/" + removeLabel,
+      url: "/repos/karlbohlmark/youkanban/issues/" + urlencodedIssue + "/labels/" + removeLabel,
       method: 'delete'
     }, function(err) {
       return console.log("removing label " + removeLabel + " " + (err ? ' failed' : 'succeeded'));
     });
     return apiCall({
-      url: "/repos/karlbohlmark/youkanban/issues/" + issue + "/labels}",
+      url: "/repos/karlbohlmark/youkanban/issues/" + urlencodedIssue + "/labels}",
       method: 'post',
       json: [addLabel]
     }, function(err, resp) {
