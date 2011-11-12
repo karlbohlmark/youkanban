@@ -89,14 +89,14 @@
     addLabel = prettyToUglyLabel(toState);
     apiCall({
       url: "/repos/karlbohlmark/youkanban/issues/" + urlencodedIssue + "/labels/" + removeLabel,
-      method: 'delete'
+      method: 'DELETE'
     }, function(err) {
       return console.log("removing label " + removeLabel + " " + (err ? ' failed' : 'succeeded'));
     });
     return apiCall({
       url: "/repos/karlbohlmark/youkanban/issues/" + urlencodedIssue + "/labels",
-      method: 'post',
-      json: [addLabel]
+      method: 'POST',
+      body: JSON.stringify([addLabel])
     }, function(err, resp) {
       return console.log("adding label " + addLabel + " " + (err ? ' failed' : 'succeeded'));
     });

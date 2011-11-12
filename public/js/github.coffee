@@ -47,15 +47,15 @@ executeIssueCommand = (issue, fromState, toState, cb)->
 	addLabel = prettyToUglyLabel(toState)
 	apiCall
 			url: "/repos/karlbohlmark/youkanban/issues/#{urlencodedIssue}/labels/#{removeLabel}"
-			method: 'delete'
+			method: 'DELETE'
 		,
 			(err)->
 				console.log "removing label #{removeLabel} #{if err then ' failed' else 'succeeded'}"
 
 	apiCall
 			url: "/repos/karlbohlmark/youkanban/issues/#{urlencodedIssue}/labels"
-			method: 'post'
-			json: [addLabel]
+			method: 'POST'
+			body: JSON.stringify( [addLabel] )
 		,
 			(err, resp)->
 				console.log "adding label #{addLabel} #{if err then ' failed' else 'succeeded'}"
