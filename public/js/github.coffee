@@ -53,7 +53,7 @@ executeIssueCommand = (issue, fromState, toState, cb)->
 				console.log "removing label #{removeLabel} #{if err then ' failed' else 'succeeded'}"
 
 	apiCall
-			url: "/repos/karlbohlmark/youkanban/issues/#{urlencodedIssue}/labels}"
+			url: "/repos/karlbohlmark/youkanban/issues/#{urlencodedIssue}/labels"
 			method: 'post'
 			json: [addLabel]
 		,

@@ -94,7 +94,7 @@
       return console.log("removing label " + removeLabel + " " + (err ? ' failed' : 'succeeded'));
     });
     return apiCall({
-      url: "/repos/karlbohlmark/youkanban/issues/" + urlencodedIssue + "/labels}",
+      url: "/repos/karlbohlmark/youkanban/issues/" + urlencodedIssue + "/labels",
       method: 'post',
       json: [addLabel]
     }, function(err, resp) {
