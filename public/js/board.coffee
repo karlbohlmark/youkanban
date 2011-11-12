@@ -87,7 +87,7 @@ $ ->
 #-----------------/ PROJECT DROPDOWN ---------------
 
 $ ->
-	window.location.href = 'https://github.com/login/oauth/authorize?client_id=1875e74c695bc9d36482' if not window.location.search?
+	window.location.href = 'https://github.com/login/oauth/authorize?client_id=1875e74c695bc9d36482' unless !!window.location.search
 
 	$('.dropdown-menu').on 'click', 'a', (e)->
 		toggle = $(this).closest('.dropdown').find('.dropdown-toggle')
@@ -106,7 +106,6 @@ $ ->
 			.addClass(toggle.attr('data-id'))
 
 	$('body').on 'click', '.task', ->
-		
 		location.href = 'http://localhost:8282/issue/' + $(this).attr('id')
 
 	$('.container').on 'dblclick', ->
