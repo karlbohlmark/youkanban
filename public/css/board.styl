@@ -29,6 +29,21 @@ body
 		padding 0 10px
 		
 		.task
+			&.type-Bug.prio-Critical
+				border-color red
+
+			.task-header
+				margin-top -5px
+
+			.task-footer
+				overflow auto
+				margin-bottom -5px
+			.assignee
+				float right
+			.prio
+				float left
+			.type
+				display none
 			&.filtered-out
 				display none
 			border 2px solid phase-color
@@ -51,7 +66,7 @@ body
 		.tasks
 			h2
 				line-height 1.2
-				font-size 20px
+				font-size 18px
 				margin-bottom 4px
 			padding-top 4px
 			padding-bottom 4px

@@ -29,15 +29,28 @@ hub.on 'task-move', (moveEvent) ->
 	view.moveTask(moveEvent.task, moveEvent.toPhase)
 
 # ----------------- EVENTS -----------------
+
+
+
+taskViewFn = require('jade').compile """
+	li.task(id="\#{id}", class="type-\#{type} prio-\#{prio}", draggable="true")
+		header.task-header
+			a.issueNumber(href="http://localhost:8282/issue/\#{id}") \#{id}
+		h2.title \#{title}
+		p.body \#{body}
+		.task-footer
+			span.assignee \#{assignee}
+			.type \#{type}
+			.prio \#{prio}
+"""
+
 hub.on 'clear-tasks', ->
 	$('.task').remove()
 
 hub.on 'task-add', (taskAddEvent) ->
 	task = taskAddEvent
 
-	newTask = $("""
-	<li class="task" id="#{task.id}" draggable="true"><h2 class="title">#{task.title}</h2><p class="body">#{task.body}</p></li>
-	""")
+	newTask = $(taskViewFn(task))
 
 	newTask.on "dragstart", (e) ->
 		e = e.originalEvent

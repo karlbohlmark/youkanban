@@ -1,25 +1,30 @@
 (function() {
   var executeIssueCommand, extractIssue, getField, getIssuesForProject, getProjectStates, getProjects;
   var __slice = Array.prototype.slice;
-
   getField = function(fieldName) {
     return function(i) {
-      var _ref;
-      return (_ref = i.field.filter(function(f) {
+      var field;
+      field = i.field.filter(function(f) {
         return f['@name'] === fieldName;
-      })[0]) != null ? _ref.value : void 0;
+      });
+      if (field.length) {
+        return field.pop().value;
+      } else {
+        return '';
+      }
     };
   };
-
   extractIssue = function(i) {
     return {
       id: i['@id'],
       title: getField('summary')(i),
       body: getField('description')(i),
-      phase: getField('State')(i)
+      phase: getField('State')(i),
+      assignee: getField('Assignee')(i),
+      prio: getField('Priority')(i),
+      type: getField('Type')(i)
     };
   };
-
   getIssuesForProject = function(projectId, phases, cb) {
     var deferreds, phase, _i, _len;
     deferreds = [];
@@ -49,7 +54,7 @@
         _results = [];
         for (_j = 0, _len2 = issues.length; _j < _len2; _j++) {
           i = issues[_j];
-          _results.push(i.length ? i : [i]);
+          _results.push((i.length ? i : [i]));
         }
         return _results;
       })();
@@ -59,14 +64,18 @@
         _results = [];
         for (_j = 0, _len2 = issues2.length; _j < _len2; _j++) {
           issue = issues2[_j];
-          if (issue != null) _results.push(extractIssue(issue));
+          if (issue != null) {
+            _results.push(extractIssue(issue));
+          }
         }
         return _results;
       })();
+      issues3.sort(function(i) {
+        return i.prio;
+      });
       return cb(issues3);
     });
   };
-
   getProjects = function(cb) {
     return $.ajax({
       'url': "/rest/project/all",
@@ -80,21 +89,23 @@
       'dataType': 'json'
     });
   };
-
   executeIssueCommand = function(issue, command, cb) {
     return $.ajax({
       url: "/rest/issue/" + issue + "/execute",
       data: "command=" + command,
       type: 'POST',
       success: function(response) {
-        if (cb != null) return cb(null, response);
+        if (cb != null) {
+          return cb(null, response);
+        }
       },
       error: function(response) {
-        if (cb != null) return cb(response);
+        if (cb != null) {
+          return cb(response);
+        }
       }
     });
   };
-
   getProjectStates = function(project, cb) {
     return $.ajax({
       'url': "/rest/admin/customfield/stateBundle/Experis%20States",
@@ -107,7 +118,9 @@
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             state = _ref[_i];
-            if (state['@isResolved'] === "false") _results.push(state['$']);
+            if (state['@isResolved'] === "false") {
+              _results.push(state['$']);
+            }
           }
           return _results;
         })();
@@ -118,7 +131,6 @@
       }
     });
   };
-
   /*
   	$.ajax
   		'url': "/rest/project/states"
@@ -126,12 +138,10 @@
   		success: (response)-> cb(null, response)
   		error: (response)-> cb(response)
   */
-
   window.youtrack = {
     getIssuesForProject: getIssuesForProject,
     getProjects: getProjects,
     executeIssueCommand: executeIssueCommand,
     getProjectStates: getProjectStates
   };
-
 }).call(this);

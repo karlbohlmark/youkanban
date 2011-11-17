@@ -1,5 +1,5 @@
 (function() {
-  var byId, q, q1, view, _ref;
+  var byId, q, q1, taskViewFn, view, _ref;
   window.hub = new EventEmitter2({
     verbose: true
   });
@@ -42,13 +42,14 @@
     youtrack.executeIssueCommand(moveEvent.task, moveEvent.toPhase);
     return view.moveTask(moveEvent.task, moveEvent.toPhase);
   });
+  taskViewFn = require('jade').compile("li.task(id=\"\#{id}\", class=\"type-\#{type} prio-\#{prio}\", draggable=\"true\")\n	header.task-header\n		a.issueNumber(href=\"http://localhost:8282/issue/\#{id}\") \#{id}\n	h2.title \#{title}\n	p.body \#{body}\n	.task-footer\n		span.assignee \#{assignee}\n		.type \#{type}\n		.prio \#{prio}");
   hub.on('clear-tasks', function() {
     return $('.task').remove();
   });
   hub.on('task-add', function(taskAddEvent) {
     var newTask, phase, task;
     task = taskAddEvent;
-    newTask = $("<li class=\"task\" id=\"" + task.id + "\" draggable=\"true\"><h2 class=\"title\">" + task.title + "</h2><p class=\"body\">" + task.body + "</p></li>");
+    newTask = $(taskViewFn(task));
     newTask.on("dragstart", function(e) {
       e = e.originalEvent;
       e.dataTransfer.effectAllowed = "copy";
@@ -93,11 +94,10 @@
     });
   });
   $(function() {
-    return hub.emit('load-project', 'exp');
+    return hub.emit('load-project', 'EX');
   });
   $(function() {
-    return;
-	return youtrack.getProjects(function(projects) {
+    return youtrack.getProjects(function(projects) {
       var p;
       if (!Array.isArray(projects)) {
         p = projects.project;

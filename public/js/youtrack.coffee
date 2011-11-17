@@ -1,12 +1,17 @@
 getField = (fieldName)-> 
-	(i)-> i.field.filter((f)->f['@name']==fieldName)[0]?.value
+	(i)-> 
+		field = i.field.filter((f)->f['@name']==fieldName)
+		if field.length then field.pop().value else ''
 
 extractIssue = (i)->
 	{ 
-		id: i['@id'], 
-		title: getField('summary')(i), 
-		body: getField('description')(i), 
-		phase: getField('State')(i) 
+		id: i['@id']
+		title: getField('summary')(i)
+		body: getField('description')(i)
+		phase: getField('State')(i)
+		assignee: getField('Assignee')(i)
+		prio: getField('Priority')(i)
+		type: getField('Type')(i)
 	}
 
 getIssuesForProject = (projectId, phases, cb)->
@@ -24,6 +29,9 @@ getIssuesForProject = (projectId, phases, cb)->
 		issues2 = ( Array.prototype.concat.apply([], issues1) )
 
 		issues3 = ( extractIssue(issue) for issue in issues2 when issue? )
+
+		issues3.sort (i)-> i.prio
+
 		cb(issues3)
 
 getProjects = (cb)->
