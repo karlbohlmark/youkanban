@@ -18,7 +18,7 @@ getIssuesForProject = (projectId, phases, cb)->
 	deferreds = []
 	for phase in phases
 		deferreds.push $.ajax(
-			'url': "/rest/issue/byproject/#{projectId}?filter=State%3A%7B#{phase.name}%7D"
+			'url': "/rest/issue/byproject/#{projectId}?max=30&filter=State%3A%7B#{phase.name}%7D"
 			'dataType': 'json')
 
 	jQuery.when.apply(jQuery, deferreds).done (issues...)->
@@ -30,7 +30,7 @@ getIssuesForProject = (projectId, phases, cb)->
 
 		issues3 = ( extractIssue(issue) for issue in issues2 when issue? )
 
-		issues3.sort (i)-> i.prio
+		issues3.sort (a, b)-> if a.prio < b.prio then -1 else 1
 
 		cb(issues3)
 

@@ -35,7 +35,7 @@ hub.on 'task-move', (moveEvent) ->
 taskViewFn = require('jade').compile """
 	li.task(id="\#{id}", class="type-\#{type} prio-\#{prio}", draggable="true")
 		header.task-header
-			a.issueNumber(href="http://localhost:8282/issue/\#{id}") \#{id}
+			a.issueNumber(href="http://teamcity:8282/issue/\#{id}") \#{id}
 		h2.title \#{title}
 		p.body \#{body}
 		.task-footer
@@ -79,7 +79,7 @@ hub.on 'load-project', (p) ->
 
 #-------------- LOAD ISSUES ----------------
 $ ->
-	hub.emit('load-project', 'EX')
+	hub.emit('load-project', 'exp')
 #-------------------------------------------
 
 #------------------ PROJECT DROPDOWN ---------------
@@ -115,7 +115,7 @@ $ ->
 			.addClass(toggle.attr('data-id'))
 
 	$('.tasks').on 'click', '.task', ->
-		location.href = 'http://localhost:8282/issue/' + $(this).attr('id')
+		location.href = 'http://teamcity:8282/issue/' + $(this).attr('id')
 
 	$('.container').on 'dblclick', ->
 		if document.body.classList.contains('full-screen') and document.body.webkitExitFullScreen? then document.body.webkitExitFullScreen() else document.body.webkitRequestFullScreen()

@@ -1,3 +1,3 @@
 :loop
-coffee server.coffee
+call coffee server.coffee
 goto loop

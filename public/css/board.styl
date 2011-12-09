@@ -8,9 +8,10 @@ body
 	.phase
 		display block
 		float left
-		height 100%
+		min-height 100%
 		li
 			list-style-type none
+			overflow hidden
 		>.title
 			position relative
 			top 40px
@@ -22,11 +23,12 @@ body
 		margin 0
 		position relative
 		top 40px
-		height 80%
+		min-height 80%
 		&.ui-state-hover
 			opacity 80%
 		
 		padding 0 10px
+		padding-bottom 45px
 		
 		.task
 			&.type-Bug.prio-Critical
@@ -69,7 +71,7 @@ body
 				font-size 18px
 				margin-bottom 4px
 			padding-top 4px
-			padding-bottom 4px
+			padding-bottom 45px
 
 			p
 				display none

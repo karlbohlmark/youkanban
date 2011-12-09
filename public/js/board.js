@@ -1,11 +1,16 @@
 (function() {
-  var byId, q, q1, taskViewFn, view, _ref;
+  var byId, q, q1, taskViewFn, view, _base, _ref;
+
   window.hub = new EventEmitter2({
     verbose: true
   });
+
   q = document.querySelectorAll.bind(document);
+
   q1 = document.querySelector.bind(document);
+
   byId = document.getElementById.bind(document);
+
   view = {
     getTask: function(id) {
       return byId(id);
@@ -23,29 +28,39 @@
       return toPhaseList.appendChild(task);
     }
   };
-  if ((_ref = String.prototype.contains) == null) {
-    String.prototype.contains = function(s) {
+
+  if ((_ref = (_base = String.prototype).contains) == null) {
+    _base.contains = function(s) {
       return this.indexOf(s) !== -1;
     };
   }
+
   hub.on('task-filter-changed', function(filterEvent) {
     var task, tasks, _i, _len, _results;
     tasks = [].slice.call(q('.task'));
     _results = [];
     for (_i = 0, _len = tasks.length; _i < _len; _i++) {
       task = tasks[_i];
-      _results.push(!task.textContent.toUpperCase().contains(filterEvent.query.toUpperCase()) ? task.classList.add('filtered-out') : task.classList.remove('filtered-out'));
+      if (!task.textContent.toUpperCase().contains(filterEvent.query.toUpperCase())) {
+        _results.push(task.classList.add('filtered-out'));
+      } else {
+        _results.push(task.classList.remove('filtered-out'));
+      }
     }
     return _results;
   });
+
   hub.on('task-move', function(moveEvent) {
     youtrack.executeIssueCommand(moveEvent.task, moveEvent.toPhase);
     return view.moveTask(moveEvent.task, moveEvent.toPhase);
   });
-  taskViewFn = require('jade').compile("li.task(id=\"\#{id}\", class=\"type-\#{type} prio-\#{prio}\", draggable=\"true\")\n	header.task-header\n		a.issueNumber(href=\"http://localhost:8282/issue/\#{id}\") \#{id}\n	h2.title \#{title}\n	p.body \#{body}\n	.task-footer\n		span.assignee \#{assignee}\n		.type \#{type}\n		.prio \#{prio}");
+
+  taskViewFn = require('jade').compile("li.task(id=\"\#{id}\", class=\"type-\#{type} prio-\#{prio}\", draggable=\"true\")\n	header.task-header\n		a.issueNumber(href=\"http://teamcity:8282/issue/\#{id}\") \#{id}\n	h2.title \#{title}\n	p.body \#{body}\n	.task-footer\n		span.assignee \#{assignee}\n		.type \#{type}\n		.prio \#{prio}");
+
   hub.on('clear-tasks', function() {
     return $('.task').remove();
   });
+
   hub.on('task-add', function(taskAddEvent) {
     var newTask, phase, task;
     task = taskAddEvent;
@@ -58,6 +73,7 @@
     phase = $("[data-phase='" + task.phase + "']");
     return phase.find('.tasks').append(newTask);
   });
+
   hub.on('load-project', function(p) {
     hub.emit('clear-tasks');
     return resource.view('board.jade', function(viewStr) {
@@ -93,9 +109,11 @@
       });
     });
   });
+
   $(function() {
-    return hub.emit('load-project', 'EX');
+    return hub.emit('load-project', 'exp');
   });
+
   $(function() {
     return youtrack.getProjects(function(projects) {
       var p;
@@ -105,6 +123,7 @@
       }
     });
   });
+
   $(function() {
     $('.dropdown-menu').on('click', 'a', function(e) {
       var id, item, menu, text, toggle;
@@ -119,7 +138,7 @@
       return $('.board').removeClass(id).addClass(toggle.attr('data-id'));
     });
     $('.tasks').on('click', '.task', function() {
-      return location.href = 'http://localhost:8282/issue/' + $(this).attr('id');
+      return location.href = 'http://teamcity:8282/issue/' + $(this).attr('id');
     });
     $('.container').on('dblclick', function() {
       if (document.body.classList.contains('full-screen') && (document.body.webkitExitFullScreen != null)) {
@@ -136,4 +155,5 @@
     };
     return window.board.initDragAndDrop();
   });
+
 }).call(this);
