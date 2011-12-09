@@ -1,5 +1,7 @@
 phase-color= #6a6
 
+base-font-size=10px
+
 body
 	background-color #6a6
 
@@ -35,11 +37,15 @@ body
 				border-color red
 
 			.task-header
+				font-size 12px
+			.title
+				font-size 18px
 				margin-top -5px
 
 			.task-footer
 				overflow auto
 				margin-bottom -5px
+
 			.assignee
 				float right
 			.prio
@@ -51,7 +57,7 @@ body
 			border 2px solid phase-color
 			border-radius 4px
 			margin-top 7px
-			padding 10px
+			padding 5px
 			h2
 				margin 0 0 5px
 				line-height 1.2
@@ -68,7 +74,7 @@ body
 		.tasks
 			h2
 				line-height 1.2
-				font-size 18px
+				font-size base-font-size
 				margin-bottom 4px
 			padding-top 4px
 			padding-bottom 45px
@@ -76,6 +82,17 @@ body
 			p
 				display none
 				padding-bottom 0px
+			
+			.task
+				padding-top 0
+				margin-top 4px
+				.task-footer
+					display none
+				.task-header
+					font-size base-font-size
+				.title
+					font-size base-font-size
+					margin-bottom 0
 
 .loading-overlay
 	display none

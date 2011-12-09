@@ -31,12 +31,16 @@ body {
   border: 2px solid #6a6;
   border-radius: 4px;
   margin-top: 7px;
-  padding: 10px;
+  padding: 5px;
 }
 .board .tasks .task.type-Bug.prio-Critical {
   border-color: #f00;
 }
 .board .tasks .task .task-header {
+  font-size: 12px;
+}
+.board .tasks .task .title {
+  font-size: 18px;
   margin-top: -5px;
 }
 .board .tasks .task .task-footer {
@@ -208,12 +212,26 @@ body {
 }
 .board.compact .tasks h2 {
   line-height: 1.2;
-  font-size: 18px;
+  font-size: 10px;
   margin-bottom: 4px;
 }
 .board.compact .tasks p {
   display: none;
   padding-bottom: 0px;
+}
+.board.compact .tasks .task {
+  padding-top: 0;
+  margin-top: 4px;
+}
+.board.compact .tasks .task .task-footer {
+  display: none;
+}
+.board.compact .tasks .task .task-header {
+  font-size: 10px;
+}
+.board.compact .tasks .task .title {
+  font-size: 10px;
+  margin-bottom: 0;
 }
 .loading-overlay {
   display: none;
