@@ -1,3 +1,8 @@
+@ECHO OFF
+IF NOT DEFINED YOUTRACK_PORT SET YOUTRACK_PORT=8282
+
+IF NOT DEFINED YOUTRACK_HOST SET YOUTRACK_HOST=%computername%
+
 :loop
 call coffee server.coffee
 goto loop

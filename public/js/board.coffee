@@ -3,6 +3,8 @@ q = document.querySelectorAll.bind(document)
 q1 = document.querySelector.bind(document)
 byId = document.getElementById.bind(document)
 
+trackerUrl = config.youtrack.url
+
 view =
 	getTask: (id)-> byId(id)
 	getPhase: (phase)-> q1("[data-phase='#{phase}']")
@@ -35,7 +37,8 @@ hub.on 'task-move', (moveEvent) ->
 taskViewFn = require('jade').compile """
 	li.task(id="\#{id}", class="type-\#{type} prio-\#{prio}", draggable="true")
 		header.task-header
-			a.issueNumber(href="http://teamcity:8282/issue/\#{id}") \#{id}
+			a.issueNumber(href="#{trackerUrl}/issue/\#{id}") \#{id}
+			span.assignee \#{assignee}
 		h2.title \#{title}
 		p.body \#{body}
 		.task-footer

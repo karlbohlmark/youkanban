@@ -25,10 +25,9 @@ phases = ( {name: phase, tasks:[]} for phase in config.youtrack.phases)
 console.log(phases)
 
 # ACTIONS
-app.get '/board', (req, res)-> 	res.render 'board.jade', {phases}
+app.get '/board', (req, res)-> 	res.render 'board.jade', {phases, config}
 
 app.get '/config', (req, res)-> res.json config
-
 
 # RUN
 app.listen(8080)

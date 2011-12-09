@@ -1,5 +1,5 @@
 (function() {
-  var byId, q, q1, taskViewFn, view, _base, _ref;
+  var byId, q, q1, taskViewFn, trackerUrl, view, _base, _ref;
 
   window.hub = new EventEmitter2({
     verbose: true
@@ -10,6 +10,8 @@
   q1 = document.querySelector.bind(document);
 
   byId = document.getElementById.bind(document);
+
+  trackerUrl = config.youtrack.url;
 
   view = {
     getTask: function(id) {
@@ -55,7 +57,7 @@
     return view.moveTask(moveEvent.task, moveEvent.toPhase);
   });
 
-  taskViewFn = require('jade').compile("li.task(id=\"\#{id}\", class=\"type-\#{type} prio-\#{prio}\", draggable=\"true\")\n	header.task-header\n		a.issueNumber(href=\"http://teamcity:8282/issue/\#{id}\") \#{id}\n	h2.title \#{title}\n	p.body \#{body}\n	.task-footer\n		span.assignee \#{assignee}\n		.type \#{type}\n		.prio \#{prio}");
+  taskViewFn = require('jade').compile("li.task(id=\"\#{id}\", class=\"type-\#{type} prio-\#{prio}\", draggable=\"true\")\n	header.task-header\n		a.issueNumber(href=\"" + trackerUrl + "/issue/\#{id}\") \#{id}\n		span.assignee \#{assignee}\n	h2.title \#{title}\n	p.body \#{body}\n	.task-footer\n		span.assignee \#{assignee}\n		.type \#{type}\n		.prio \#{prio}");
 
   hub.on('clear-tasks', function() {
     return $('.task').remove();
