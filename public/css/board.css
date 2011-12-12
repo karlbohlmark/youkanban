@@ -221,7 +221,12 @@ body {
 }
 .board.compact .tasks .task {
   padding-top: 0;
+}
+.board.compact .tasks .task:not(:first-child) {
   margin-top: 4px;
+}
+.board.compact .tasks .task:first-child {
+  margin-top: 0;
 }
 .board.compact .tasks .task .task-footer {
   display: none;

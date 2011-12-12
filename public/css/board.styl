@@ -85,7 +85,10 @@ body
 			
 			.task
 				padding-top 0
-				margin-top 4px
+				&:not(:first-child)
+					margin-top 4px
+				&:first-child
+					margin-top 0
 				.task-footer
 					display none
 				.task-header
